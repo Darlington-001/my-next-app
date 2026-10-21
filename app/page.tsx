@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 import {
   FaFacebookF,
   FaTwitter,
@@ -5,71 +9,157 @@ import {
   FaBehance,
 } from "react-icons/fa";
 
-export default function Home() {
-   return (
-   <main className="min-h-screen bg-white text-gray-900">
-    <section className="relative h-screen min-h-[600px] w-full overflow-hidden">
-    <img
-   src="/bundles.png"
-   alt="Colorful forest landscape"
-   className="absolute inset-0 h-full w-full object-cover"
-    />
-    <div className="absolute inset-0 bg-black/45" />
+export default function Home() { 
+  const [menuOpen, setMenuOpen] = useState(false); 
+  const [currentSlide, setCurrentSlide] = useState(0);
 
+  const slides = [
+   { image: "/bundles.png",
+     category: "Fashion",
+     title: "Richird Norton photorealistic rendering as real photos", 
+     description: "Progressively incentivize cooperative systems through technically sound functionalities. The credibly productivate seamless data.", 
+     author: "Jennifer Lawrence", 
+    }, 
+  
+    ];
 
-    <nav className="absolute left-0 top-0 z-50 w-full">
-      <div className="mx-auto flex h-20 max-w-[1200px] items-center justify-between px-6">
+        const slide = slides[currentSlide];
+        const nextSlide = () => { setCurrentSlide((current) => (current + 1) % slides.length); 
+
+        };
+        const prevSlide = () => { setCurrentSlide( (current) => (current - 1 + slides.length) % slides.length ); 
+
+        };
+
+        const closeMenu = () => setMenuOpen(false);
+     return ( 
+          <main className="min-h-screen bg-white text-gray-900"> 
+          {/* Sticky Navbar */} 
+          <nav className="sticky top-0 z-50 w-full bg-[#212936]/95 text-white shadow-md backdrop-blur-md"> 
+          <div className="mx-auto flex h-20 max-w-[1200px] items-center justify-between px-6"> 
         <a
-          href="/"
-          className="text-2xl font-bold tracking-wide text-white"
-        >
-          RUNO
+       href="/"
+       className="text-2xl font-bold tracking-wide text-white"
+       onClick={closeMenu}
+        > 
+        RUNO 
         </a>
 
-        <div className="flex items-center gap-3 text-sm text-white sm:gap-6 sm:text-base">
-          <a href="/" className="hover:text-gray-300">
+      {/* Desktop Navigation: 768px and above */}
+      <div className="hidden items-center gap-6 text-base md:flex">
+        <a href="/" className="transition hover:text-gray-300">
+          Home
+        </a>
+        <a href="#about" className="transition hover:text-gray-300">
+          About
+        </a>
+        <a href="#articles" className="transition hover:text-gray-300">
+          Articles
+        </a>
+        <a href="#contact" className="transition hover:text-gray-300">
+          Contact Us
+        </a>
+      </div>
+
+      {/* Mobile Menu Button: below 768px */}
+      <button
+        type="button"
+        className="flex h-11 w-11 items-center justify-center rounded-md border border-white/30 text-2xl transition hover:bg-white/10 md:hidden"
+        onClick={() => setMenuOpen((open) => !open)}
+        aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+        aria-expanded={menuOpen}
+        aria-controls="mobile-navigation"
+      >
+        {menuOpen ? "×" : "☰"}
+      </button>
+    </div>
+
+    {/* Mobile Drawer: opens below the navbar */}
+    {menuOpen && (
+      <div
+        id="mobile-navigation"
+        className="absolute left-0 top-full w-full border-t border-white/10 bg-[#212936] px-6 py-5 shadow-xl md:hidden"
+      >
+        <div className="mx-auto flex max-w-[1200px] flex-col">
+          <a
+            href="/"
+            onClick={closeMenu}
+            className="border-b border-white/10 py-4 transition hover:text-gray-300"
+          >
             Home
           </a>
-          <a href="#about" className="hover:text-gray-300">
+          <a
+            href="#about"
+            onClick={closeMenu}
+            className="border-b border-white/10 py-4 transition hover:text-gray-300"
+          >
             About
           </a>
-          <a href="#articles" className="hover:text-gray-300">
+          <a
+            href="#articles"
+            onClick={closeMenu}
+            className="border-b border-white/10 py-4 transition hover:text-gray-300"
+          >
             Articles
           </a>
-          <a href="#contact" className="hover:text-gray-300">
+          <a
+            href="#contact"
+            onClick={closeMenu}
+            className="py-4 transition hover:text-gray-300"
+          >
             Contact Us
           </a>
         </div>
       </div>
-    </nav>
+    )}
+  </nav>
 
-    <div className="absolute inset-0 z-10 flex items-center justify-center px-5">
-      <div className="mx-auto w-full max-w-[1200px]">
-        <div className="mx-auto max-w-[750px] text-left text-white">
+  {/* Hero Carousel */}
+  <section className="relative h-[650px] min-h-[600px] w-full overflow-hidden bg-gray-900 sm:h-screen">
+    {slides.map((item, index) => (
+      <div
+        key={item.image}
+        className={`absolute inset-0 transition-opacity duration-700 ${
+          index === currentSlide
+            ? "z-10 opacity-100"
+            : "z-0 pointer-events-none opacity-0"
+        }`}
+        aria-hidden={index !== currentSlide}
+      >
+        <img
+          src={item.image}
+          alt={item.title}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
 
-          <span className="mb-4 inline-block rounded-md bg-white/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide backdrop-blur-sm">
-            Fashion
-          </span>
+        <div className="absolute inset-0 bg-black/45" />
 
-          <h1 className="mb-5 max-w-[700px] text-left font-serif text-3xl font-bold leading-tight tracking-tight sm:text-4xl md:text-5xl">
-            Richird Norton photorealistic rendering as real photos
-          </h1>
+        <div className="absolute inset-0 flex items-center px-6 sm:px-10">
+          <div className="mx-auto w-full max-w-[1200px]">
+            <div className="max-w-[750px] text-left text-white">
+              <span className="mb-4 inline-block rounded-md bg-white/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide backdrop-blur-sm">
+                {item.category}
+              </span>
 
-          <p className="mb-6 max-w-[620px] text-left text-sm leading-relaxed text-white/90 sm:text-base">
-            Progressively incentivize cooperative systems through
-            technically sound functionalities. The credibly
-            productivate seamless data.
-          </p>
+              <h1 className="mb-5 max-w-[700px] font-serif text-3xl font-bold leading-tight tracking-tight sm:text-4xl md:text-5xl">
+                {item.title}
+              </h1>
 
-          <p className="text-left text-sm font-bold sm:text-base">
-            By Jennifer Lawrence
-          </p>
+              <p className="mb-6 max-w-[620px] text-sm leading-relaxed text-white/90 sm:text-base">
+                {item.description}
+              </p>
+
+              <p className="text-sm font-bold sm:text-base">
+                By {item.author}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    ))}
+
   </section>
 
-  
   <article className="mx-auto max-w-[1000px] px-6 py-20">
     <div className="mb-10 flex items-center gap-6 text-sm text-gray-500">
       <span>08.08.2021</span>
@@ -119,7 +209,7 @@ export default function Home() {
       />
     </div>
 
-    <div className="ml-auto mt-12 max-w-[800px] text-lg leading-[1.8] text-gray-500">
+    [10/20/2026 6:33 AM] Darlington: <div className="ml-auto mt-12 max-w-[800px] text-lg leading-[1.8] text-gray-500">
       <p className="mb-8">
         Efficiently empower seamless meta-services with impactful
         opportunities. Distinctively transition virtual outsourcing
@@ -335,8 +425,7 @@ export default function Home() {
           Cave in Germany
 
         </h3>
-
-        <p className="mt-4 text-sm leading-6 text-gray-500">
+           <p className="mt-4 text-sm leading-6 text-gray-500">
 
          Progressively incentivize cooperative systems through 
          technically sound functionalities. Credibly productivate 
@@ -588,9 +677,7 @@ export default function Home() {
         </div>
 
       </div>
-
-
-      <div>
+[10/20/2026 6:33 AM] Darlington: <div>
 
         <h3 className="font-serif text-2xl font-bold">
 
@@ -650,7 +737,7 @@ export default function Home() {
 
           >
 
-            ▶
+            ▶️
 
           </a>
 
